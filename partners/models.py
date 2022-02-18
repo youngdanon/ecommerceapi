@@ -10,8 +10,7 @@ class Partner(models.Model):
 
 
 class Offer(models.Model):
-    key = models.CharField("key", max_length=255)
-    partner_id = models.ForeignKey(Partner, related_name='offer', on_delete=models.CASCADE)
-    product = models.ForeignKey(Product, related_name='offer', on_delete=models.CASCADE)
+    partner = models.ForeignKey(Partner, related_name='offer', on_delete=models.CASCADE)
+    product = models.OneToOneField(Product, related_name='offer', on_delete=models.CASCADE)
     transitions_amount = models.IntegerField('transition')
     orders_amount = models.IntegerField('orders_amount')

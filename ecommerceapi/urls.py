@@ -5,10 +5,13 @@ from django.conf.urls.static import static
 from django.conf import settings
 from users.api import urls as user_urls
 from main.api import urls as shop_urls
+from partners.api import urls as partners_urls
 
 urlpatterns = [
     path('admin/', admin.site.urls),
     path('api/v1/user/', include(user_urls)),
-    path('api/v1/product/', include(shop_urls))
+    path('api/v1/product/', include(shop_urls)),
+    path('api/v1/partners/', include(partners_urls)),
+
 
 ]+static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)

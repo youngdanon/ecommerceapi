@@ -1,7 +1,6 @@
 from django.db import models
 from django.contrib.postgres.fields import ArrayField
-from django.templatetags.static import static
-
+from django_resized import ResizedImageField
 from users.models import User
 
 
@@ -21,10 +20,20 @@ class Product(models.Model):
     meta_tags = ArrayField(models.CharField(max_length=50))
     description = models.TextField('description')
     price = models.DecimalField('price', max_digits=100, decimal_places=2)
-    old_price = models.DecimalField('price', max_digits=100, decimal_places=2, blank=True)
+    old_price = models.DecimalField('old price', max_digits=100, decimal_places=2, blank=True, null=True)
     is_active = models.BooleanField('is_active', default=True)
     stock = models.IntegerField('stock')
     similar_to = models.ManyToManyField(to='self', blank=True)
+    preview_image = ResizedImageField('image', size=[400, 400], crop=['middle', 'center'], quality=75,
+                                      upload_to='product/preview/%b%d%Y%H%M%S/')
+
+    warranty_period = models.PositiveIntegerField('warranty months', null=True, blank=True)
+    warranty_extension_period = models.PositiveIntegerField('warranty extension period', null=True, blank=True)
+    warranty_extension_price = models.DecimalField('warranty extension price',
+                                                   max_digits=100,
+                                                   decimal_places=2,
+                                                   null=True,
+                                                   blank=True)
 
     def __str__(self):
         return self.name
@@ -58,10 +67,8 @@ class Cart(models.Model):
 
 
 class ProductImage(models.Model):
-    small_image = models.ImageField(upload_to='product/resized/%b%d%Y%H%M%S/',
-                                    default=static('no_avatar.png'))
-    image = models.ImageField(upload_to='product/%b%d%Y%H%M%S/',
-                              default=static('no_avatar.png'))
+    image = ResizedImageField(size=[1000, 1000], crop=['middle', 'center'], quality=75,
+                              upload_to='product/%b%d%Y%H%M%S/')
     product = models.ForeignKey(Product, related_name='image', on_delete=models.CASCADE, null=True, blank=True)
 
 
